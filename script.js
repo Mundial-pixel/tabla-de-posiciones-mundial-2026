@@ -24,7 +24,9 @@ async function mostrarResultados() {
 
             if (status.state === 'in') {
                 estadoClase = 'estado-vivo';
-                estadoTexto = `EN VIVO ${status.displayClock}`;
+                // Arreglo para el "EN VIVO undefined"
+                const reloj = status.displayClock? status.displayClock : 'En juego';
+                estadoTexto = `EN VIVO ${reloj}`;
             } else if (status.state === 'post') {
                 estadoClase = 'estado-final';
                 estadoTexto = 'Finalizado';
@@ -32,7 +34,7 @@ async function mostrarResultados() {
                 estadoTexto = `Hoy a las ${horaPartido}`;
             }
 
-            // Goles con validación completa
+            // Goles con validación total del equipo
             let golesHTML = '';
             if (comp.details && comp.details.length > 0) {
                 const goles = comp.details.filter(d => d.scoringPlay === true && d.clock && d.clock.displayValue);
@@ -47,8 +49,17 @@ async function mostrarResultados() {
                                     jugador = gol.athletesInvolved[0].displayName;
                                 }
 
-                                // Arreglo para el undefined del equipo
-                                const equipoGol = gol.team?.displayName || (gol.team.id === home.team.id? home.team.displayName : away.team.displayName);
+                                // Arreglo definitivo para el equipo undefined
+                                let equipoGol = 'Equipo';
+                                if (gol.team && gol.team.id) {
+                                    if (gol.team.id === home.team.id) {
+                                        equipoGol = home.team.displayName;
+                                    } else if (gol.team.id === away.team.id) {
+                                        equipoGol = away.team.displayName;
+                                    } else if (gol.team.displayName) {
+                                        equipoGol = gol.team.displayName;
+                                    }
+                                }
 
                                 return `<p>⚽ ${gol.clock.displayValue}' - ${equipoGol}: ${jugador}</p>`;
                             }).join('')}
