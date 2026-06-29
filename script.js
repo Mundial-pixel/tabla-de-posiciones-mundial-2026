@@ -220,8 +220,8 @@ const upcomingDiv = document.getElementById('upcoming');
 const groupsDiv = document.getElementById('groups');
 
 // URLS CON PROXY PARA EVITAR CORS
-const ESPN_URL = 'https://api.allorigins.win/raw?url=https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard';
-const ESPN_GROUPS_URL = 'https://api.allorigins.win/raw?url=https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/standings';
+const ESPN_URL = 'https://corsproxy.io/?https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard';
+const ESPN_GROUPS_URL = 'https://corsproxy.io/?https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/standings';
 
 console.log('Script iniciado');
 
