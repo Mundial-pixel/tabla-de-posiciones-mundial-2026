@@ -162,5 +162,16 @@ footer {
     }
     th, td {
         padding: 5px 2px;
+        .goles {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #ddd;
+    font-size: 14px;
+}
+
+.goles p {
+    margin: 3px 0;
+    color: #555;
+}
     }
 }
