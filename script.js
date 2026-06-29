@@ -287,13 +287,33 @@ async function mostrarResultados() {
                     }
                 }
 
-                // FIX: Detectar la fase correcta - 16avos, cuartos, etc
+                // FIX DEFINITIVO: Detectar fase por fecha + datos de API
                 let faseTexto = t('faseGrupos');
+                const fechaPartido = new Date(match.date);
+                const inicio16avos = new Date('2026-06-28');
+                const inicioCuartos = new Date('2026-07-04');
+                const inicioSemis = new Date('2026-07-08');
+                const inicioFinal = new Date('2026-07-12');
+
                 if (comp.notes && comp.notes[0] && comp.notes[0].headline) {
                     faseTexto = comp.notes[0].headline;
-                } else if (comp.type && comp.type.text) {
+                }
+                else if (comp.type && comp.type.text) {
                     faseTexto = comp.type.text;
-                } else if (comp.groups && comp.groups.name) {
+                }
+                else if (fechaPartido >= inicioFinal) {
+                    faseTexto = t('final');
+                }
+                else if (fechaPartido >= inicioSemis) {
+                    faseTexto = t('semis');
+                }
+                else if (fechaPartido >= inicioCuartos) {
+                    faseTexto = t('cuartos');
+                }
+                else if (fechaPartido >= inicio16avos) {
+                    faseTexto = t('octavos');
+                }
+                else if (comp.groups && comp.groups.name) {
                     faseTexto = `${t('grupo')} ${comp.groups.name}`;
                 }
 
