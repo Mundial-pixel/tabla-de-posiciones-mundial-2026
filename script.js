@@ -268,11 +268,18 @@ async function mostrarResultados() {
                 }
 
                 let grupoTexto = t('faseGrupos');
-                if (comp.groups && comp.groups.name) {
-                    grupoTexto = comp.groups.name;
-                } else if (comp.notes && comp.notes[0] && comp.notes[0].headline) {
-                    grupoTexto = comp.notes[0].headline;
-                }
+// Prioridad 1: Si la API dice la ronda exacta, úsala
+if (comp.notes && comp.notes[0] && comp.notes[0].headline) {
+    grupoTexto = comp.notes[0].headline;
+}
+// Prioridad 2: Si hay info de bracket/llaves
+else if (comp.type && comp.type.text) {
+    grupoTexto = comp.type.text;
+}
+// Prioridad 3: Si es grupo, muestra el grupo
+else if (comp.groups && comp.groups.name) {
+    grupoTexto = `${t('grupo')} ${comp.groups.name}`;
+}
 
                 return `
                     <div class="partido">
