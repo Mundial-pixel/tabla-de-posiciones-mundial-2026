@@ -3,43 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tabla de Posiciones Mundial 2026 En Vivo</title>
+    <title data-i18n="titulo">Tabla de Posiciones Mundial 2026 En Vivo</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header>
-        <h1>Mundial 2026 - Resultados y Posiciones En Vivo</h1>
+        <div class="header-top">
+            <h1 data-i18n="titulo">Mundial 2026 - Resultados y Posiciones En Vivo</h1>
+            <select id="idioma">
+                <option value="es">🇻🇪 Español</option>
+                <option value="en">🇺🇸 English</option>
+                <option value="de">🇩🇪 Deutsch</option>
+                <option value="pt">🇧🇷 Português</option>
+            </select>
+        </div>
         <div id="venezuela-flag">
             <img src="https://flagcdn.com/w20/ve.png" alt="Bandera de Venezuela">
-            <span> Hola gusto en saludarte soy de Venezuela, diseñe esta web sin saber programación, pero lo he intentado con mucho cariño para mostrar resultados del mundial. Si deseas colaborar, estaré agradecido de corazón, saludos.</span>
+            <span data-i18n="mensajeVenezuela"> Hola gusto en saludarte soy de Venezuela, diseñe esta web sin saber programación, pero lo he intentado con mucho cariño para mostrar resultados del mundial. Si deseas colaborar, estaré agradecido de corazón, saludos.</span>
         </div>
     </header>
 
     <main>
         <section id="live-results">
-            <h2>Partidos de Hoy</h2>
-            <div id="results">Cargando resultados...</div>
+            <h2 data-i18n="partidosHoy">Partidos de Hoy</h2>
+            <div id="results" data-i18n="cargando">Cargando resultados...</div>
         </section>
 
         <section id="next-matches">
-            <h2>Próximos Partidos</h2>
-            <div id="upcoming">Cargando próximos partidos...</div>
+            <h2 data-i18n="proximos">Próximos Partidos</h2>
+            <div id="upcoming" data-i18n="cargando">Cargando próximos partidos...</div>
         </section>
 
         <section id="standings">
-            <h2>Tabla de Posiciones por Grupos</h2>
-            <div id="groups">Cargando grupos...</div>
+            <h2 data-i18n="tabla">Tabla de Posiciones por Grupos</h2>
+            <div id="groups" data-i18n="cargando">Cargando grupos...</div>
         </section>
 
         <section id="donation">
-            <h2>Colabora con el proyecto</h2>
-            <a href="https://paypal.me/lacr1914" target="_blank">Donar por PayPal</a>
-            <a href="https://app.binance.com/uni-qr/FdqRtb16" target="_blank">Donar por Binance</a>
+            <h2 data-i18n="colabora">Colabora con el proyecto</h2>
+            <a href="https://paypal.me/lacr1914" target="_blank" data-i18n="donarPaypal">Donar por PayPal</a>
+            <a href="https://app.binance.com/uni-qr/FdqRtb16" target="_blank" data-i18n="donarBinance">Donar por Binance</a>
         </section>
     </main>
 
     <footer>
-        <p>Datos en vivo | Hecho con cariño desde Venezuela</p>
+        <p data-i18n="footer">Datos en vivo | Hecho con cariño desde Venezuela</p>
     </footer>
 
     <script src="script.js"></script>
