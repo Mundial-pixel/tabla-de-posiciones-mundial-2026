@@ -19,8 +19,13 @@ const traducciones = {
         enJuego: "En juego",
         programado: "Hoy a las",
         goles: "Goles:",
-        grupo: "Grupo:",
+        grupo: "Fase:",
         faseGrupos: "Fase de Grupos",
+        octavos: "Octavos de Final",
+        cuartos: "Cuartos de Final",
+        semis: "Semifinales",
+        final: "Final",
+        tercerPuesto: "Tercer Puesto",
         jugador: "Jugador",
         equipo: "Equipo",
         estadio: "Estadio por confirmar",
@@ -60,8 +65,13 @@ const traducciones = {
         enJuego: "In play",
         programado: "Today at",
         goles: "Goals:",
-        grupo: "Group:",
+        grupo: "Stage:",
         faseGrupos: "Group Stage",
+        octavos: "Round of 16",
+        cuartos: "Quarter-finals",
+        semis: "Semi-finals",
+        final: "Final",
+        tercerPuesto: "Third Place",
         jugador: "Player",
         equipo: "Team",
         estadio: "Stadium TBA",
@@ -101,8 +111,13 @@ const traducciones = {
         enJuego: "Im Spiel",
         programado: "Heute um",
         goles: "Tore:",
-        grupo: "Gruppe:",
+        grupo: "Phase:",
         faseGrupos: "Gruppenphase",
+        octavos: "Achtelfinale",
+        cuartos: "Viertelfinale",
+        semis: "Halbfinale",
+        final: "Finale",
+        tercerPuesto: "Spiel um Platz 3",
         jugador: "Spieler",
         equipo: "Mannschaft",
         estadio: "Stadion noch offen",
@@ -142,8 +157,13 @@ const traducciones = {
         enJuego: "Em jogo",
         programado: "Hoje às",
         goles: "Gols:",
-        grupo: "Grupo:",
+        grupo: "Fase:",
         faseGrupos: "Fase de Grupos",
+        octavos: "Oitavas de Final",
+        cuartos: "Quartas de Final",
+        semis: "Semifinais",
+        final: "Final",
+        tercerPuesto: "Disputa de 3º Lugar",
         jugador: "Jogador",
         equipo: "Time",
         estadio: "Estádio a confirmar",
@@ -267,25 +287,21 @@ async function mostrarResultados() {
                     }
                 }
 
-                let grupoTexto = t('faseGrupos');
-// Prioridad 1: Si la API dice la ronda exacta, úsala
-if (comp.notes && comp.notes[0] && comp.notes[0].headline) {
-    grupoTexto = comp.notes[0].headline;
-}
-// Prioridad 2: Si hay info de bracket/llaves
-else if (comp.type && comp.type.text) {
-    grupoTexto = comp.type.text;
-}
-// Prioridad 3: Si es grupo, muestra el grupo
-else if (comp.groups && comp.groups.name) {
-    grupoTexto = `${t('grupo')} ${comp.groups.name}`;
-}
+                // FIX: Detectar la fase correcta - 16avos, cuartos, etc
+                let faseTexto = t('faseGrupos');
+                if (comp.notes && comp.notes[0] && comp.notes[0].headline) {
+                    faseTexto = comp.notes[0].headline;
+                } else if (comp.type && comp.type.text) {
+                    faseTexto = comp.type.text;
+                } else if (comp.groups && comp.groups.name) {
+                    faseTexto = `${t('grupo')} ${comp.groups.name}`;
+                }
 
                 return `
                     <div class="partido">
                         <p><strong>${home.team.displayName}</strong> ${home.score || 0} - ${away.score || 0} <strong>${away.team.displayName}</strong></p>
                         <p class="${estadoClase}">${t('estado')} ${estadoTexto}</p>
-                        <p>${t('grupo')} ${grupoTexto}</p>
+                        <p>${t('grupo')} ${faseTexto}</p>
                         ${golesHTML}
                     </div>
                 `;
