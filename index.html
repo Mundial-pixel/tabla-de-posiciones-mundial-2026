@@ -4,13 +4,101 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mundial 2026 - Resultados y Posiciones En Vivo</title>
-    <link rel="stylesheet" href="style.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh; padding: 20px; color: #333;
+        }
+       .container {
+            max-width: 1200px; margin: 0 auto; background: white;
+            border-radius: 15px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); overflow: hidden;
+        }
+       .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white; padding: 30px; text-align: center;
+        }
+       .header h1 { font-size: 2.5em; margin-bottom: 10px; }
+       .content { padding: 30px; }
+       .section { margin-bottom: 40px; }
+       .section h2 {
+            color: #1e3c72; margin-bottom: 20px; font-size: 1.8em;
+            border-bottom: 3px solid #667eea; padding-bottom: 10px;
+        }
+       .lang-selector { margin-bottom: 20px; }
+       .lang-selector select {
+            padding: 8px 15px; border-radius: 8px; border: 2px solid #667eea;
+            font-size: 1em; cursor: pointer;
+        }
+       .match-card {
+            background: #f8f9fa; border-radius: 10px; padding: 20px; margin-bottom: 15px;
+            border-left: 5px solid #667eea; transition: transform 0.2s;
+        }
+       .match-card:hover { transform: translateX(5px); }
+       .match-teams {
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;
+        }
+       .team { display: flex; align-items: center; gap: 10px; flex: 1; }
+       .team-name { font-weight: bold; font-size: 1.1em; }
+       .score { font-size: 1.5em; font-weight: bold; color: #1e3c72; min-width: 80px; text-align: center; }
+       .match-info { color: #666; font-size: 0.9em; margin-top: 8px; }
+       .match-stage {
+            background: #667eea; color: white; padding: 3px 10px;
+            border-radius: 12px; font-size: 0.8em; margin-left: 10px;
+        }
+       .status-live {
+            background: #dc3545; color: white; padding: 4px 12px;
+            border-radius: 20px; font-size: 0.85em; display: inline-block; animation: pulse 2s infinite;
+        }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+       .status-finished { background: #28a745; color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.85em; }
+       .status-scheduled { background: #6c757d; color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.85em; }
+       .goal-list {
+            margin-top: 12px; padding-top: 12px; border-top: 1px dashed #ccc;
+            font-size: 0.9em;
+        }
+       .goal-item {
+            display: flex; align-items: center; gap: 8px; margin: 6px 0;
+        }
+       .goal-icon { font-size: 1.1em; }
+       .goal-minute {
+            background: #1e3c72; color: white; padding: 2px 8px;
+            border-radius: 10px; font-size: 0.8em; font-weight: bold; min-width: 35px; text-align: center;
+        }
+       .goal-player { font-weight: 600; }
+       .goal-team { color: #666; font-size: 0.85em; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background: #1e3c72; color: white; font-weight: 600; }
+        tr:hover { background: #f5f5f5; }
+       .qualified { background: #d4edda!important; font-weight: bold; }
+       .loading { text-align: center; padding: 40px; color: #666; font-size: 1.2em; }
+       .error { background: #f8d7da; color: #721c24; padding: 15px; border-radius: 8px; margin: 10px 0; }
+       .info-box {
+            background: #fff3cd; border-left: 5px solid #ffc107;
+            padding: 15px; margin-bottom: 20px; border-radius: 5px;
+        }
+       .donation { text-align: center; margin-top: 30px; padding: 20px; background: #f8f9fa; border-radius: 10px; }
+       .donation button {
+            background: #28a745; color: white; border: none; padding: 12px 30px;
+            border-radius: 25px; font-size: 1em; cursor: pointer; margin: 5px;
+        }
+       .donation button:hover { background: #218838; }
+        @media (max-width: 768px) {
+           .header h1 { font-size: 1.8em; }
+           .match-teams { flex-direction: column; gap: 10px; }
+            table { font-size: 0.85em; }
+            th, td { padding: 8px; }
+           .goal-item { flex-wrap: wrap; }
+        }
+    </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
             <h1>⚽ Mundial 2026 - Resultados y Posiciones En Vivo</h1>
-            <p id="subtitle">Datos actualizados automáticamente desde ESPN</p>
+            <p id="subtitle">Datos actualizados automáticamente</p>
         </div>
 
         <div class="content">
@@ -22,7 +110,7 @@
             </div>
 
             <div class="info-box">
-                <p id="welcomeMsg">Hola, gusto en saludarte. Soy de Venezuela, diseñé esta web sin saber programación, pero lo he intentado con mucho cariño para mostrar resultados del mundial. Si deseas colaborar, estaré agradecido de corazón. Saludos.</p>
+                <p id="welcomeMsg">Hola gusto en saludarte soy de Venezuela, diseñé esta web sin saber programación, pero lo he intentado con mucho cariño para mostrar resultados del mundial. Si deseas colaborar, estaré agradecido de corazón, saludos.</p>
             </div>
 
             <div class="section">
@@ -49,6 +137,289 @@
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+        // API-FOOTBALL - 100 requests/día GRATIS
+        const API_KEY = 'YOUR_KEY'; // <-- PEGA TU KEY DE RAPIDAPI AQUÍ
+        const API_HOST = 'v3.football.api-sports.io';
+        const LEAGUE_ID = 1; // 1 = World Cup
+        const SEASON = 2026;
+
+        let idiomaActual = 'es';
+        let datosCache = null;
+
+        const textos = {
+            es: {
+                subtitle: 'Datos actualizados automáticamente',
+                todayMatches: 'Partidos de Hoy - 16avos de Final',
+                nextMatches: 'Próximos Partidos',
+                groupStandings: 'Tabla de Posiciones por Grupos',
+                loading: 'Cargando...',
+                noMatches: 'No hay partidos hoy. Revisa próximos partidos abajo.',
+                noUpcoming: 'No hay próximos partidos disponibles aún.',
+                noStandings: 'La tabla de posiciones aún no está disponible.',
+                error: 'Error cargando datos. Reintenta en 1 min o verifica tu API key.',
+                live: 'EN VIVO',
+                finished: 'Finalizado',
+                scheduled: 'Programado',
+                goals: 'Goles',
+                donationTitle: 'Colabora con el proyecto',
+                donationText: 'Si te gusta esta web, puedes apoyar con una donación',
+                welcomeMsg: 'Hola gusto en saludarte soy de Venezuela, diseñé esta web sin saber programación, pero lo he intentado con mucho cariño para mostrar resultados del mundial. Si deseas colaborar, estaré agradecido de corazón, saludos.',
+                group: 'Grupo', team: 'Equipo',
+                pj: 'PJ', g: 'G', e: 'E', p: 'P', gf: 'GF', gc: 'GC', dg: 'DG', pts: 'PTS'
+            },
+            en: {
+                subtitle: 'Data automatically updated',
+                todayMatches: "Today's Matches - Round of 16",
+                nextMatches: 'Upcoming Matches',
+                groupStandings: 'Group Standings',
+                loading: 'Loading...',
+                noMatches: 'No matches today. Check upcoming matches below.',
+                noUpcoming: 'No upcoming matches available yet.',
+                noStandings: 'Group standings not available yet.',
+                error: 'Error loading data. Retry in 1 min or check your API key.',
+                live: 'LIVE',
+                finished: 'Finished',
+                scheduled: 'Scheduled',
+                goals: 'Goals',
+                donationTitle: 'Support the project',
+                donationText: 'If you like this website, you can support with a donation',
+                welcomeMsg: 'Hello, nice to meet you. I am from Venezuela. I designed this website without knowing programming, but I have tried with a lot of love to show World Cup results. If you wish to collaborate, I will be grateful from the heart. Greetings.',
+                group: 'Group', team: 'Team',
+                pj: 'MP', g: 'W', e: 'D', p: 'L', gf: 'GF', gc: 'GA', dg: 'GD', pts: 'PTS'
+            }
+        };
+
+        function cambiarIdioma() {
+            idiomaActual = document.getElementById('languageSelect').value;
+            const t = textos[idiomaActual];
+            document.getElementById('subtitle').textContent = t.subtitle;
+            document.getElementById('todayMatches').textContent = t.todayMatches;
+            document.getElementById('nextMatches').textContent = t.nextMatches;
+            document.getElementById('groupStandings').textContent = t.groupStandings;
+            document.getElementById('donationTitle').textContent = t.donationTitle;
+            document.getElementById('donationText').textContent = t.donationText;
+            document.getElementById('welcomeMsg').textContent = t.welcomeMsg;
+            if (datosCache) mostrarDatos(datosCache);
+        }
+
+        async function fetchAPI(endpoint) {
+            const url = `https://${API_HOST}/${endpoint}`;
+            const response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'x-rapidapi-host': API_HOST,
+                    'x-rapidapi-key': API_KEY
+                }
+            });
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            const data = await response.json();
+            return data.response;
+        }
+
+        async function cargarDatos() {
+            try {
+                if (API_KEY === 'YOUR_KEY') {
+                    throw new Error('Falta configurar API_KEY');
+                }
+                console.log('Cargando partidos...');
+                const hoy = new Date().toISOString().split('T')[0];
+                const fixtures = await fetchAPI(`fixtures?league=${LEAGUE_ID}&season=${SEASON}&date=${hoy}`);
+                const proximos = await fetchAPI(`fixtures?league=${LEAGUE_ID}&season=${SEASON}&next=10`);
+
+                datosCache = { hoy: fixtures, proximos: proximos };
+                mostrarDatos(datosCache);
+                cargarPosiciones();
+            } catch (error) {
+                console.error('Error total:', error);
+                document.getElementById('partidos-hoy').innerHTML = `<div class="error">${textos[idiomaActual].error}</div>`;
+                document.getElementById('proximos-partidos').innerHTML = `<div class="error">${textos[idiomaActual].error}</div>`;
+            }
+        }
+
+        function obtenerEstadoPartido(status) {
+            const t = textos[idiomaActual];
+            if (status === 'FT' || status === 'AET' || status === 'PEN') {
+                return { class: 'status-finished', text: t.finished };
+            }
+            if (status === '1H' || status === '2H' || status === 'HT' || status === 'ET') {
+                return { class: 'status-live', text: t.live };
+            }
+            return { class: 'status-scheduled', text: t.scheduled };
+        }
+
+        function obtenerGoles(fixture) {
+            const goles = [];
+            if (fixture.events) {
+                fixture.events.forEach(event => {
+                    if (event.type === 'Goal') {
+                        goles.push({
+                            minuto: event.time.elapsed + (event.time.extra || 0),
+                            jugador: event.player.name,
+                            equipo: event.team.name,
+                            propio: event.detail === 'Own Goal'
+                        });
+                    }
+                });
+            }
+            return goles;
+        }
+
+        function mostrarDatos(data) {
+            const t = textos[idiomaActual];
+            mostrarPartidos(data.hoy, 'partidos-hoy', t.noMatches);
+            mostrarProximosPartidos(data.proximos, 'proximos-partidos', t.noUpcoming);
+        }
+
+        function mostrarPartidos(partidos, elementId, mensajeVacio) {
+            const t = textos[idiomaActual];
+            const contenedor = document.getElementById(elementId);
+            if (!partidos || partidos.length === 0) {
+                contenedor.innerHTML = `<p>${mensajeVacio}</p>`;
+                return;
+            }
+
+            contenedor.innerHTML = partidos.map(partido => {
+                const home = partido.teams.home;
+                const away = partido.teams.away;
+                const homeScore = partido.goals.home?? 0;
+                const awayScore = partido.goals.away?? 0;
+                const estado = obtenerEstadoPartido(partido.fixture.status.short);
+                const goles = obtenerGoles(partido);
+                const fase = partido.league.round.includes('Round of 16')? (idiomaActual === 'es'? '16avos de Final' : 'Round of 16') : partido.league.round;
+
+                let golesHTML = '';
+                if (goles.length > 0) {
+                    golesHTML = `
+                        <div class="goal-list">
+                            <strong>⚽ ${t.goals}:</strong>
+                            ${goles.map(g => `
+                                <div class="goal-item">
+                                    <span class="goal-icon">⚽</span>
+                                    <span class="goal-minute">${g.minuto}'</span>
+                                    <span class="goal-player">${g.jugador}</span>
+                                    <span class="goal-team">(${g.equipo})${g.propio? ' (GEC)' : ''}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                }
+
+                return `
+                    <div class="match-card">
+                        <div class="match-teams">
+                            <div class="team">
+                                <span class="team-name">${home.name}</span>
+                            </div>
+                            <div class="score">${homeScore} - ${awayScore}</div>
+                            <div class="team" style="justify-content: flex-end;">
+                                <span class="team-name">${away.name}</span>
+                            </div>
+                        </div>
+                        <div class="match-info">
+                            <span class="${estado.class}">${estado.text}</span>
+                            ${fase? `<span class="match-stage">${fase}</span>` : ''}
+                            <span style="margin-left: 10px;">${new Date(partido.fixture.date).toLocaleString(idiomaActual === 'es'? 'es-ES' : 'en-US')}</span>
+                        </div>
+                        ${golesHTML}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function mostrarProximosPartidos(partidos, elementId, mensajeVacio) {
+            const t = textos[idiomaActual];
+            const contenedor = document.getElementById(elementId);
+
+            if (!partidos || partidos.length === 0) {
+                contenedor.innerHTML = `<p>${mensajeVacio}</p>`;
+                return;
+            }
+
+            contenedor.innerHTML = partidos.map(partido => {
+                const home = partido.teams.home;
+                const away = partido.teams.away;
+                const fase = partido.league.round.includes('Round of 16')? (idiomaActual === 'es'? '16avos de Final' : 'Round of 16') : partido.league.round;
+
+                return `
+                    <div class="match-card">
+                        <div class="match-teams">
+                            <div class="team">
+                                <span class="team-name">${home.name}</span>
+                            </div>
+                            <div class="score">vs</div>
+                            <div class="team" style="justify-content: flex-end;">
+                                <span class="team-name">${away.name}</span>
+                            </div>
+                        </div>
+                        <div class="match-info">
+                            <span class="status-scheduled">${t.scheduled}</span>
+                            ${fase? `<span class="match-stage">${fase}</span>` : ''}
+                            <span style="margin-left: 10px;">${new Date(partido.fixture.date).toLocaleString(idiomaActual === 'es'? 'es-ES' : 'en-US')}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        async function cargarPosiciones() {
+            try {
+                const standings = await fetchAPI(`standings?league=${LEAGUE_ID}&season=${SEASON}`);
+                mostrarPosiciones(standings);
+            } catch (error) {
+                console.error('Error standings:', error);
+                document.getElementById('tabla-posiciones').innerHTML = `<p>${textos[idiomaActual].noStandings}</p>`;
+            }
+        }
+
+        function mostrarPosiciones(data) {
+            const t = textos[idiomaActual];
+            const contenedor = document.getElementById('tabla-posiciones');
+
+            if (!data || data.length === 0 ||!data[0].league.standings) {
+                contenedor.innerHTML = `<p>${t.noStandings}</p>`;
+                return;
+            }
+
+            let html = '';
+            data[0].league.standings.forEach(grupo => {
+                html += `<h3 style="margin-top: 20px; color: #1e3c72;">${t.group} ${grupo[0].group}</h3>`;
+                html += `
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>${t.team}</th><th>${t.pj}</th><th>${t.g}</th><th>${t.e}</th>
+                                <th>${t.p}</th><th>${t.gf}</th><th>${t.gc}</th><th>${t.dg}</th><th>${t.pts}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+
+                grupo.forEach((entry, index) => {
+                    const className = entry.rank <= 2? 'qualified' : '';
+                    html += `
+                        <tr class="${className}">
+                            <td>${entry.team.name}</td>
+                            <td>${entry.all.played}</td>
+                            <td>${entry.all.win}</td>
+                            <td>${entry.all.draw}</td>
+                            <td>${entry.all.lose}</td>
+                            <td>${entry.all.goals.for}</td>
+                            <td>${entry.all.goals.against}</td>
+                            <td>${entry.goalsDiff}</td>
+                            <td><strong>${entry.points}</strong></td>
+                        </tr>
+                    `;
+                });
+
+                html += '</tbody></table>';
+            });
+
+            contenedor.innerHTML = html;
+        }
+
+        cargarDatos();
+        setInterval(cargarDatos, 300000);
+    </script>
 </body>
 </html>
