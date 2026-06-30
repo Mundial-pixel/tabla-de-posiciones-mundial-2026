@@ -36,6 +36,10 @@ body {
 .team-name { font-weight: bold; font-size: 1.1em; }
 .score { font-size: 1.5em; font-weight: bold; color: #1e3c72; min-width: 80px; text-align: center; }
 .match-info { color: #666; font-size: 0.9em; margin-top: 8px; }
+.match-stage {
+    background: #667eea; color: white; padding: 3px 10px;
+    border-radius: 12px; font-size: 0.8em; margin-left: 10px;
+}
 .status-live {
     background: #dc3545; color: white; padding: 4px 12px;
     border-radius: 20px; font-size: 0.85em; display: inline-block; animation: pulse 2s infinite;
@@ -43,6 +47,20 @@ body {
 @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
 .status-finished { background: #28a745; color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.85em; }
 .status-scheduled { background: #6c757d; color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.85em; }
+.goal-list {
+    margin-top: 12px; padding-top: 12px; border-top: 1px dashed #ccc;
+    font-size: 0.9em;
+}
+.goal-item {
+    display: flex; align-items: center; gap: 8px; margin: 6px 0;
+}
+.goal-icon { font-size: 1.1em; }
+.goal-minute {
+    background: #1e3c72; color: white; padding: 2px 8px;
+    border-radius: 10px; font-size: 0.8em; font-weight: bold; min-width: 35px; text-align: center;
+}
+.goal-player { font-weight: 600; }
+.goal-team { color: #666; font-size: 0.85em; }
 table { width: 100%; border-collapse: collapse; margin-top: 15px; }
 th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
 th { background: #1e3c72; color: white; font-weight: 600; }
@@ -61,8 +79,9 @@ tr:hover { background: #f5f5f5; }
 }
 .donation button:hover { background: #218838; }
 @media (max-width: 768px) {
- .header h1 { font-size: 1.8em; }
- .match-teams { flex-direction: column; gap: 10px; }
+.header h1 { font-size: 1.8em; }
+.match-teams { flex-direction: column; gap: 10px; }
     table { font-size: 0.85em; }
     th, td { padding: 8px; }
+.goal-item { flex-wrap: wrap; }
 }
