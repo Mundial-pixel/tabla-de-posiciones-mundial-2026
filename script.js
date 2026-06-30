@@ -26,8 +26,6 @@ const traducciones = {
         semis: "Semifinales",
         final: "Final",
         tercerPuesto: "Tercer Puesto",
-        clasificados: "Clasificados",
-        eliminados: "Eliminados",
         jugador: "Jugador",
         equipo: "Equipo",
         estadio: "Estadio por confirmar",
@@ -74,8 +72,6 @@ const traducciones = {
         semis: "Semi-finals",
         final: "Final",
         tercerPuesto: "Third Place",
-        clasificados: "Qualified",
-        eliminados: "Eliminated",
         jugador: "Player",
         equipo: "Team",
         estadio: "Stadium TBA",
@@ -122,8 +118,6 @@ const traducciones = {
         semis: "Halbfinale",
         final: "Finale",
         tercerPuesto: "Spiel um Platz 3",
-        clasificados: "Qualifiziert",
-        eliminados: "Ausgeschieden",
         jugador: "Spieler",
         equipo: "Mannschaft",
         estadio: "Stadion noch offen",
@@ -170,8 +164,6 @@ const traducciones = {
         semis: "Semifinais",
         final: "Final",
         tercerPuesto: "Disputa de 3º Lugar",
-        clasificados: "Classificados",
-        eliminados: "Eliminados",
         jugador: "Jogador",
         equipo: "Time",
         estadio: "Estádio a confirmar",
@@ -209,6 +201,7 @@ function cambiarIdioma() {
         el.textContent = t(clave);
     });
     document.title = t('titulo');
+    // Recargar datos con nuevo idioma
     mostrarResultados();
     mostrarProximosPartidos();
     mostrarTablaPosiciones();
@@ -219,9 +212,8 @@ const resultsDiv = document.getElementById('results');
 const upcomingDiv = document.getElementById('upcoming');
 const groupsDiv = document.getElementById('groups');
 
-// URLS CON PROXY PARA EVITAR CORS
-const ESPN_URL = 'https://corsproxy.io/?https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard';
-const ESPN_GROUPS_URL = 'https://corsproxy.io/?https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/standings';
+const ESPN_URL = 'https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard';
+const ESPN_GROUPS_URL = 'https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/standings';
 
 console.log('Script iniciado');
 
@@ -395,79 +387,7 @@ async function mostrarTablaPosiciones() {
             return;
         }
 
-        let clasificados = [];
-        let eliminados = [];
-
-        data.children.forEach(grupo => {
-            const equipos = grupo.standings.entries;
-
-            equipos.forEach((equipo, idx) => {
-                const stats = equipo.stats;
-                const pj = stats.find(s => s.name === 'gamesPlayed')?.value || 0;
-                const pts = stats.find(s => s.name === 'points')?.value || 0;
-                const dg = stats.find(s => s.name === 'pointDifferential')?.value || 0;
-
-                const equipoData = {
-                    nombre: equipo.team.displayName,
-                    grupo: grupo.name,
-                    pj: pj,
-                    pts: pts,
-                    dg: dg,
-                    pos: idx + 1
-                };
-
-                if (pj >= 3) {
-                    if (idx < 2) {
-                        clasificados.push(equipoData);
-                    } else {
-                        eliminados.push(equipoData);
-                    }
-                }
-                else if (pj === 2 && pts >= 6) {
-                    clasificados.push(equipoData);
-                }
-                else if (pj === 2 && pts === 0) {
-                    eliminados.push(equipoData);
-                }
-            });
-        });
-
-        clasificados.sort((a, b) => b.pts - a.pts || b.dg - a.dg);
-        eliminados.sort((a, b) => b.pts - a.pts || b.dg - a.dg);
-
-        let listasHTML = `
-            <div class="listas-clasificacion">
-                <div class="lista-clasificados">
-                    <h3>✅ ${t('clasificados')} a Octavos (${clasificados.length})</h3>
-                    ${clasificados.length > 0? `
-                        <div class="equipos-grid">
-                            ${clasificados.map(e => `
-                                <div class="equipo-clasificado">
-                                    <strong>${e.nombre}</strong>
-                                    <span>${e.grupo} - ${e.pts} pts (${e.dg > 0? '+' : ''}${e.dg})</span>
-                                </div>
-                            `).join('')}
-                        </div>
-                    ` : `<p>Todavía no hay clasificados</p>`}
-                </div>
-
-                <div class="lista-eliminados">
-                    <h3>❌ ${t('eliminados')} (${eliminados.length})</h3>
-                    ${eliminados.length > 0? `
-                        <div class="equipos-grid">
-                            ${eliminados.map(e => `
-                                <div class="equipo-eliminado">
-                                    <strong>${e.nombre}</strong>
-                                    <span>${e.grupo} - ${e.pts} pts (${e.dg > 0? '+' : ''}${e.dg})</span>
-                                </div>
-                            `).join('')}
-                        </div>
-                    ` : `<p>Todavía no hay eliminados</p>`}
-                </div>
-            </div>
-        `;
-
-        let tablasHTML = data.children.map(grupo => {
+        groupsDiv.innerHTML = data.children.map(grupo => {
             const equipos = grupo.standings.entries;
 
             return `
@@ -501,8 +421,8 @@ async function mostrarTablaPosiciones() {
                                 const pts = stats.find(s => s.name === 'points')?.value || 0;
 
                                 let clase = '';
-                                if (pj >= 2 && idx < 2) clase = 'clasificado';
-                                if (pj >= 2 && idx > 1 && pts < 3) clase = 'eliminado';
+                                if (idx < 2 && pj >= 2) clase = 'clasificado';
+                                if (idx > 1 && pj >= 2 && pts < 3) clase = 'eliminado';
 
                                 return `
                                     <tr class="${clase}">
@@ -524,8 +444,6 @@ async function mostrarTablaPosiciones() {
                 </div>
             `;
         }).join('');
-
-        groupsDiv.innerHTML = listasHTML + tablasHTML;
 
     } catch (error) {
         console.error('Error tabla:', error);
