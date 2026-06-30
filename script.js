@@ -1,4 +1,3 @@
-// Usamos 2 proxies por si uno falla desde Arica/Venezuela
 const PROXIES = [
     'https://api.allorigins.win/raw?url=',
     'https://api.codetabs.com/v1/proxy?quest='
@@ -12,7 +11,7 @@ let datosCache = null;
 const textos = {
     es: {
         subtitle: 'Datos actualizados automáticamente desde ESPN',
-        todayMatches: 'Partidos de Hoy',
+        todayMatches: 'Partidos de Hoy - 16avos de Final',
         nextMatches: 'Próximos Partidos',
         groupStandings: 'Tabla de Posiciones por Grupos',
         loading: 'Cargando...',
@@ -23,16 +22,17 @@ const textos = {
         live: 'EN VIVO',
         finished: 'Finalizado',
         scheduled: 'Programado',
+        goals: 'Goles',
+        goalBy: 'Gol de',
         donationTitle: 'Colabora con el proyecto',
         donationText: 'Si te gusta esta web, puedes apoyar con una donación',
         welcomeMsg: 'Hola gusto en saludarte soy de Venezuela, diseñé esta web sin saber programación, pero lo he intentado con mucho cariño para mostrar resultados del mundial. Si deseas colaborar, estaré agradecido de corazón, saludos.',
-        group: 'Grupo',
-        team: 'Equipo',
+        group: 'Grupo', team: 'Equipo',
         pj: 'PJ', g: 'G', e: 'E', p: 'P', gf: 'GF', gc: 'GC', dg: 'DG', pts: 'PTS'
     },
     en: {
         subtitle: 'Data automatically updated from ESPN',
-        todayMatches: "Today's Matches",
+        todayMatches: "Today's Matches - Round of 16",
         nextMatches: 'Upcoming Matches',
         groupStandings: 'Group Standings',
         loading: 'Loading...',
@@ -43,11 +43,12 @@ const textos = {
         live: 'LIVE',
         finished: 'Finished',
         scheduled: 'Scheduled',
+        goals: 'Goals',
+        goalBy: 'Goal by',
         donationTitle: 'Support the project',
         donationText: 'If you like this website, you can support with a donation',
         welcomeMsg: 'Hello, nice to meet you. I am from Venezuela. I designed this website without knowing programming, but I have tried with a lot of love to show World Cup results. If you wish to collaborate, I will be grateful from the heart. Greetings.',
-        group: 'Group',
-        team: 'Team',
+        group: 'Group', team: 'Team',
         pj: 'MP', g: 'W', e: 'D', p: 'L', gf: 'GF', gc: 'GA', dg: 'GD', pts: 'PTS'
     }
 };
@@ -102,7 +103,6 @@ function mostrarDatos(data) {
 
 function obtenerEstadoPartido(status, homeScore, awayScore) {
     const t = textos[idiomaActual];
-    // Si tiene marcador y ESPN dice "Programado", lo corregimos a "Finalizado"
     if ((homeScore > 0 || awayScore > 0) && status === 'STATUS_SCHEDULED') {
         return { class: 'status-finished', text: t.finished };
     }
@@ -115,7 +115,40 @@ function obtenerEstadoPartido(status, homeScore, awayScore) {
     return { class: 'status-scheduled', text: t.scheduled };
 }
 
+function obtenerGoles(competition) {
+    const goles = [];
+    if (!competition.details) return goles;
+
+    competition.details.forEach(detail => {
+        // ESPN usa 'score' type para goles
+        if (detail.type && detail.type.text === 'Goal' && detail.athletesInvolved) {
+            const jugador = detail.athletesInvolved[0];
+            goles.push({
+                minuto: detail.clock.displayValue || detail.clock.value,
+                jugador: jugador.displayName,
+                equipo: detail.team.displayName,
+                propio: detail.ownGoal || false
+            });
+        }
+    });
+    return goles;
+}
+
+function obtenerFase(competition) {
+    // ESPN trae la fase en competition.notes o type
+    if (competition.notes && competition.notes.length > 0) {
+        const nota = competition.notes[0].headline;
+        if (nota.includes('Round of 16')) return idiomaActual === 'es'? '16avos de Final' : 'Round of 16';
+        if (nota.includes('Quarterfinal')) return idiomaActual === 'es'? 'Cuartos de Final' : 'Quarterfinals';
+        if (nota.includes('Semifinal')) return idiomaActual === 'es'? 'Semifinal' : 'Semifinal';
+        if (nota.includes('Final')) return 'Final';
+        return nota;
+    }
+    return '';
+}
+
 function mostrarPartidos(partidos, elementId, mensajeVacio) {
+    const t = textos[idiomaActual];
     const contenedor = document.getElementById(elementId);
     if (!partidos || partidos.length === 0) {
         contenedor.innerHTML = `<p>${mensajeVacio}</p>`;
@@ -129,6 +162,25 @@ function mostrarPartidos(partidos, elementId, mensajeVacio) {
         const homeScore = parseInt(home.score) || 0;
         const awayScore = parseInt(away.score) || 0;
         const estado = obtenerEstadoPartido(comp.status.type.name, homeScore, awayScore);
+        const goles = obtenerGoles(comp);
+        const fase = obtenerFase(comp);
+
+        let golesHTML = '';
+        if (goles.length > 0) {
+            golesHTML = `
+                <div class="goal-list">
+                    <strong>⚽ ${t.goals}:</strong>
+                    ${goles.map(g => `
+                        <div class="goal-item">
+                            <span class="goal-icon">⚽</span>
+                            <span class="goal-minute">${g.minuto}'</span>
+                            <span class="goal-player">${g.jugador}</span>
+                            <span class="goal-team">(${g.equipo})${g.propio? ' (GEC)' : ''}</span>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
 
         return `
             <div class="match-card">
@@ -143,8 +195,10 @@ function mostrarPartidos(partidos, elementId, mensajeVacio) {
                 </div>
                 <div class="match-info">
                     <span class="${estado.class}">${estado.text}</span>
+                    ${fase? `<span class="match-stage">${fase}</span>` : ''}
                     <span style="margin-left: 10px;">${new Date(partido.date).toLocaleString(idiomaActual === 'es'? 'es-ES' : 'en-US')}</span>
                 </div>
+                ${golesHTML}
             </div>
         `;
     }).join('');
@@ -163,6 +217,7 @@ function mostrarProximosPartidos(partidos, elementId, mensajeVacio) {
         const comp = partido.competitions[0];
         const home = comp.competitors.find(c => c.homeAway === 'home');
         const away = comp.competitors.find(c => c.homeAway === 'away');
+        const fase = obtenerFase(comp);
 
         return `
             <div class="match-card">
@@ -174,8 +229,10 @@ function mostrarProximosPartidos(partidos, elementId, mensajeVacio) {
                     <div class="team" style="justify-content: flex-end;">
                         <span class="team-name">${away.team.displayName}</span>
                     </div>
+                </div>
                 <div class="match-info">
                     <span class="status-scheduled">${t.scheduled}</span>
+                    ${fase? `<span class="match-stage">${fase}</span>` : ''}
                     <span style="margin-left: 10px;">${new Date(partido.date).toLocaleString(idiomaActual === 'es'? 'es-ES' : 'en-US')}</span>
                 </div>
             </div>
