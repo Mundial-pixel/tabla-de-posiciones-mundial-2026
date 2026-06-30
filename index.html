@@ -5,804 +5,364 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mundial 2026 - Resultados y Posiciones En Vivo</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-            color: #333;
+            min-height: 100vh; padding: 20px; color: #333;
         }
-
        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            max-width: 1200px; margin: 0 auto; background: white;
+            border-radius: 15px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); overflow: hidden;
         }
-
-        #idioma {
-            padding: 8px 15px;
-            border-radius: 8px;
-            border: 2px solid #667eea;
-            font-size: 14px;
-            margin-bottom: 20px;
-            cursor: pointer;
+       .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white; padding: 30px; text-align: center;
         }
-
-        h1 {
-            color: #667eea;
-            margin-bottom: 10px;
-            font-size: 28px;
+       .header h1 { font-size: 2.5em; margin-bottom: 10px; }
+       .content { padding: 30px; }
+       .section { margin-bottom: 40px; }
+       .section h2 {
+            color: #1e3c72; margin-bottom: 20px; font-size: 1.8em;
+            border-bottom: 3px solid #667eea; padding-bottom: 10px;
         }
-
-        h2 {
-            color: #764ba2;
-            margin: 30px 0 15px 0;
-            padding-bottom: 10px;
-            border-bottom: 3px solid #667eea;
+       .lang-selector { margin-bottom: 20px; }
+       .lang-selector select {
+            padding: 8px 15px; border-radius: 8px; border: 2px solid #667eea;
+            font-size: 1em; cursor: pointer;
         }
-
-       .mensaje-venezuela {
-            background: #fff3cd;
-            border-left: 4px solid #ffc107;
-            padding: 12px;
-            margin: 15px 0;
-            border-radius: 5px;
-            font-size: 14px;
+       .match-card {
+            background: #f8f9fa; border-radius: 10px; padding: 20px; margin-bottom: 15px;
+            border-left: 5px solid #667eea; transition: transform 0.2s;
         }
-
-       .partido {
-            background: #f8f9fa;
-            padding: 15px;
-            margin: 10px 0;
-            border-radius: 10px;
-            border-left: 4px solid #667eea;
+       .match-card:hover { transform: translateX(5px); }
+       .match-teams {
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;
         }
-
-       .estado-vivo {
-            color: #dc3545;
-            font-weight: bold;
-            animation: pulse 1.5s infinite;
+       .team { display: flex; align-items: center; gap: 10px; flex: 1; }
+       .team-name { font-weight: bold; font-size: 1.1em; }
+       .score { font-size: 1.5em; font-weight: bold; color: #1e3c72; min-width: 80px; text-align: center; }
+       .match-info { color: #666; font-size: 0.9em; }
+       .status-live {
+            background: #dc3545; color: white; padding: 4px 12px;
+            border-radius: 20px; font-size: 0.85em; display: inline-block;
         }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.6; }
+       .status-finished { background: #28a745; color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.85em; }
+       .status-scheduled { background: #6c757d; color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.85em; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background: #1e3c72; color: white; font-weight: 600; }
+        tr:hover { background: #f5f5f5; }
+       .qualified { background: #d4edda!important; font-weight: bold; }
+       .loading { text-align: center; padding: 40px; color: #666; font-size: 1.2em; }
+       .error { background: #f8d7da; color: #721c24; padding: 15px; border-radius: 8px; margin: 10px 0; }
+       .info-box {
+            background: #fff3cd; border-left: 5px solid #ffc107;
+            padding: 15px; margin-bottom: 20px; border-radius: 5px;
         }
-
-       .estado-final {
-            color: #6c757d;
-            font-weight: bold;
+       .donation { text-align: center; margin-top: 30px; padding: 20px; background: #f8f9fa; border-radius: 10px; }
+       .donation button {
+            background: #28a745; color: white; border: none; padding: 12px 30px;
+            border-radius: 25px; font-size: 1em; cursor: pointer; margin: 5px;
         }
-
-       .goles {
-            margin-top: 10px;
-            padding-top: 10px;
-            border-top: 1px dashed #ccc;
-            font-size: 13px;
-        }
-
-       .goles p {
-            margin: 5px 0;
-        }
-
-       .listas-clasificacion {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-       .lista-clasificados,.lista-eliminados {
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 8px;
-        }
-
-       .lista-clasificados h3 {
-            color: #28a745;
-            margin-top: 0;
-            font-size: 18px;
-        }
-
-       .lista-eliminados h3 {
-            color: #dc3545;
-            margin-top: 0;
-            font-size: 18px;
-        }
-
-       .equipos-grid {
-            display: grid;
-            gap: 8px;
-        }
-
-       .equipo-clasificado,.equipo-eliminado {
-            background: white;
-            padding: 10px;
-            border-radius: 5px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-left: 4px solid #28a745;
-            font-size: 14px;
-        }
-
-       .equipo-eliminado {
-            border-left-color: #dc3545;
-            opacity: 0.7;
-        }
-
-       .equipo-clasificado span,.equipo-eliminado span {
-            font-size: 12px;
-            color: #666;
-        }
-
-       .grupo-tabla {
-            margin-bottom: 30px;
-            overflow-x: auto;
-        }
-
-       .grupo-tabla h3 {
-            background: #667eea;
-            color: white;
-            padding: 10px;
-            border-radius: 8px 8px 0 0;
-            margin: 0;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background: white;
-        }
-
-        th, td {
-            padding: 10px 8px;
-            text-align: center;
-            border-bottom: 1px solid #dee2e6;
-            font-size: 14px;
-        }
-
-        th {
-            background: #e9ecef;
-            font-weight: 600;
-        }
-
-        tr.clasificado {
-            background: #d4edda;
-        }
-
-        tr.eliminado {
-            background: #f8d7da;
-            opacity: 0.7;
-        }
-
-       .botones-donar {
-            display: flex;
-            gap: 10px;
-            margin-top: 15px;
-        }
-
-       .botones-donar button {
-            flex: 1;
-            padding: 12px;
-            border: none;
-            border-radius: 8px;
-            background: #28a745;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-            font-size: 14px;
-        }
-
-       .botones-donar button:hover {
-            background: #218838;
-        }
-
-        footer {
-            background: #343a40;
-            color: white;
-            text-align: center;
-            padding: 15px;
-            margin: 30px -25px -25px -25px;
-            border-radius: 0 0 15px 15px;
-            font-size: 13px;
-        }
-
+       .donation button:hover { background: #218838; }
         @media (max-width: 768px) {
-           .listas-clasificacion {
-                grid-template-columns: 1fr;
-            }
-
-            h1 {
-                font-size: 22px;
-            }
-
-            th, td {
-                padding: 6px 4px;
-                font-size: 12px;
-            }
+           .header h1 { font-size: 1.8em; }
+           .match-teams { flex-direction: column; gap: 10px; }
+            table { font-size: 0.85em; }
+            th, td { padding: 8px; }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <select id="idioma">
-            <option value="es">Español</option>
-            <option value="en">English</option>
-            <option value="de">Deutsch</option>
-            <option value="pt">Português</option>
-        </select>
-
-        <h1 data-i18n="titulo">Mundial 2026 - Resultados y Posiciones En Vivo</h1>
-        <p class="mensaje-venezuela" data-i18n="mensajeVenezuela"></p>
-
-        <h2 data-i18n="partidosHoy">Partidos de Hoy</h2>
-        <div id="results">Cargando resultados...</div>
-
-        <h2 data-i18n="proximos">Próximos Partidos</h2>
-        <div id="upcoming">Cargando próximos partidos...</div>
-
-        <h2 data-i18n="tabla">Tabla de Posiciones por Grupos</h2>
-        <div id="groups">Cargando grupos...</div>
-
-        <h2 data-i18n="colabora">Colabora con el proyecto</h2>
-        <div class="botones-donar">
-            <button onclick="window.open('https://paypal.me/', '_blank')" data-i18n="donarPaypal">Donar por PayPal</button>
-            <button onclick="alert('Binance Pay: tu-usuario')" data-i18n="donarBinance">Donar por Binance</button>
+        <div class="header">
+            <h1>⚽ Mundial 2026 - Resultados y Posiciones En Vivo</h1>
+            <p id="subtitle">Datos actualizados automáticamente desde ESPN</p>
         </div>
 
-        <footer data-i18n="footer">Datos en vivo | Hecho con cariño desde Venezuela</footer>
+        <div class="content">
+            <div class="lang-selector">
+                <select id="languageSelect" onchange="cambiarIdioma()">
+                    <option value="es">Español</option>
+                    <option value="en">English</option>
+                </select>
+            </div>
+
+            <div class="info-box">
+                <p id="welcomeMsg">Hola gusto en saludarte soy de Venezuela, diseñé esta web sin saber programación, pero lo he intentado con mucho cariño para mostrar resultados del mundial. Si deseas colaborar, estaré agradecido de corazón, saludos.</p>
+            </div>
+
+            <div class="section">
+                <h2 id="todayMatches">Partidos de Hoy</h2>
+                <div id="partidos-hoy" class="loading">Cargando partidos...</div>
+            </div>
+
+            <div class="section">
+                <h2 id="nextMatches">Próximos Partidos</h2>
+                <div id="proximos-partidos" class="loading">Cargando próximos partidos...</div>
+            </div>
+
+            <div class="section">
+                <h2 id="groupStandings">Tabla de Posiciones por Grupos</h2>
+                <div id="tabla-posiciones" class="loading">Cargando tabla de posiciones...</div>
+            </div>
+
+            <div class="donation">
+                <h3 id="donationTitle">Colabora con el proyecto</h3>
+                <p id="donationText">Si te gusta esta web, puedes apoyar con una donación</p>
+                <button onclick="window.open('https://www.paypal.com/donate', '_blank')">Donar por PayPal</button>
+                <button onclick="window.open('https://www.binance.com', '_blank')">Donar por Binance</button>
+            </div>
+        </div>
     </div>
 
     <script>
-        // TRADUCCIONES
-        const traducciones = {
+        const ESPN_URL = 'https://api.allorigins.win/raw?url=https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard';
+        const ESPN_GROUPS_URL = 'https://api.allorigins.win/raw?url=https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/standings';
+
+        let idiomaActual = 'es';
+        let datosCache = null;
+
+        const textos = {
             es: {
-                titulo: "Mundial 2026 - Resultados y Posiciones En Vivo",
-                mensajeVenezuela: " Hola gusto en saludarte soy de Venezuela, diseñe esta web sin saber programación, pero lo he intentado con mucho cariño para mostrar resultados del mundial. Si deseas colaborar, estaré agradecido de corazón, saludos.",
-                partidosHoy: "Partidos de Hoy",
-                proximos: "Próximos Partidos",
-                tabla: "Tabla de Posiciones por Grupos",
-                colabora: "Colabora con el proyecto",
-                donarPaypal: "Donar por PayPal",
-                donarBinance: "Donar por Binance",
-                cargando: "Cargando resultados...",
-                cargandoProximos: "Cargando próximos partidos...",
-                cargandoGrupos: "Cargando grupos...",
-                noPartidos: "No hay partidos hoy. Revisa próximos partidos abajo.",
-                noProximos: "No hay próximos partidos esta semana.",
-                finalizado: "Finalizado",
-                enVivo: "EN VIVO",
-                enJuego: "En juego",
-                programado: "Hoy a las",
-                goles: "Goles:",
-                grupo: "Fase:",
-                faseGrupos: "Fase de Grupos",
-                octavos: "Octavos de Final",
-                cuartos: "Cuartos de Final",
-                semis: "Semifinales",
-                final: "Final",
-                tercerPuesto: "Tercer Puesto",
-                clasificados: "Clasificados",
-                eliminados: "Eliminados",
-                jugador: "Jugador",
-                equipo: "Equipo",
-                estadio: "Estadio por confirmar",
-                fecha: "Fecha:",
-                estado: "Estado:",
-                error: "Error cargando datos. Intenta recargar en 1 minuto.",
-                errorProximos: "Error cargando próximos partidos.",
-                errorTabla: "Error cargando tabla de posiciones.",
-                pos: "Pos",
-                equipo: "Equipo",
-                pj: "PJ",
-                g: "G",
-                e: "E",
-                p: "P",
-                gf: "GF",
-                gc: "GC",
-                dg: "DG",
-                pts: "Pts",
-                footer: "Datos en vivo | Hecho con cariño desde Venezuela"
+                subtitle: 'Datos actualizados automáticamente desde ESPN',
+                todayMatches: 'Partidos de Hoy',
+                nextMatches: 'Próximos Partidos',
+                groupStandings: 'Tabla de Posiciones por Grupos',
+                loading: 'Cargando...',
+                noMatches: 'No hay partidos hoy. Revisa próximos partidos abajo.',
+                error: 'Error cargando datos. Intenta recargar la página.',
+                live: 'EN VIVO',
+                finished: 'Finalizado',
+                scheduled: 'Programado',
+                donationTitle: 'Colabora con el proyecto',
+                donationText: 'Si te gusta esta web, puedes apoyar con una donación',
+                welcomeMsg: 'Hola gusto en saludarte soy de Venezuela, diseñé esta web sin saber programación, pero lo he intentado con mucho cariño para mostrar resultados del mundial. Si deseas colaborar, estaré agradecido de corazón, saludos.',
+                group: 'Grupo',
+                team: 'Equipo',
+                pj: 'PJ',
+                g: 'G',
+                e: 'E',
+                p: 'P',
+                gf: 'GF',
+                gc: 'GC',
+                dg: 'DG',
+                pts: 'PTS'
             },
             en: {
-                titulo: "World Cup 2026 - Live Results and Standings",
-                mensajeVenezuela: " Hi nice to meet you I'm from Venezuela, I designed this website without knowing programming, but I tried with lots of love to show World Cup results. If you want to collaborate, I'll be grateful from the heart, regards.",
-                partidosHoy: "Today's Matches",
-                proximos: "Upcoming Matches",
-                tabla: "Group Standings",
-                colabora: "Support the project",
-                donarPaypal: "Donate via PayPal",
-                donarBinance: "Donate via Binance",
-                cargando: "Loading results...",
-                cargandoProximos: "Loading upcoming matches...",
-                cargandoGrupos: "Loading groups...",
-                noPartidos: "No matches today. Check upcoming matches below.",
-                noProximos: "No upcoming matches this week.",
-                finalizado: "Finished",
-                enVivo: "LIVE",
-                enJuego: "In play",
-                programado: "Today at",
-                goles: "Goals:",
-                grupo: "Stage:",
-                faseGrupos: "Group Stage",
-                octavos: "Round of 16",
-                cuartos: "Quarter-finals",
-                semis: "Semi-finals",
-                final: "Final",
-                tercerPuesto: "Third Place",
-                clasificados: "Qualified",
-                eliminados: "Eliminated",
-                jugador: "Player",
-                equipo: "Team",
-                estadio: "Stadium TBA",
-                fecha: "Date:",
-                estado: "Status:",
-                error: "Error loading data. Try reloading in 1 minute.",
-                errorProximos: "Error loading upcoming matches.",
-                errorTabla: "Error loading standings.",
-                pos: "Pos",
-                equipo: "Team",
-                pj: "P",
-                g: "W",
-                e: "D",
-                p: "L",
-                gf: "GF",
-                gc: "GA",
-                dg: "GD",
-                pts: "Pts",
-                footer: "Live data | Made with love from Venezuela"
-            },
-            de: {
-                titulo: "WM 2026 - Live-Ergebnisse und Tabelle",
-                mensajeVenezuela: " Hallo, schön dich kennenzulernen, ich komme aus Venezuela. Ich habe diese Website ohne Programmierkenntnisse erstellt, aber mit viel Liebe, um WM-Ergebnisse zu zeigen. Wenn du mitarbeiten möchtest, bin ich von Herzen dankbar, Grüße.",
-                partidosHoy: "Heutige Spiele",
-                proximos: "Kommende Spiele",
-                tabla: "Gruppentabelle",
-                colabora: "Unterstütze das Projekt",
-                donarPaypal: "Spenden via PayPal",
-                donarBinance: "Spenden via Binance",
-                cargando: "Ergebnisse werden geladen...",
-                cargandoProximos: "Kommende Spiele werden geladen...",
-                cargandoGrupos: "Gruppen werden geladen...",
-                noPartidos: "Keine Spiele heute. Siehe kommende Spiele unten.",
-                noProximos: "Keine kommenden Spiele diese Woche.",
-                finalizado: "Beendet",
-                enVivo: "LIVE",
-                enJuego: "Im Spiel",
-                programado: "Heute um",
-                goles: "Tore:",
-                grupo: "Phase:",
-                faseGrupos: "Gruppenphase",
-                octavos: "Achtelfinale",
-                cuartos: "Viertelfinale",
-                semis: "Halbfinale",
-                final: "Finale",
-                tercerPuesto: "Spiel um Platz 3",
-                clasificados: "Qualifiziert",
-                eliminados: "Ausgeschieden",
-                jugador: "Spieler",
-                equipo: "Mannschaft",
-                estadio: "Stadion noch offen",
-                fecha: "Datum:",
-                estado: "Status:",
-                error: "Fehler beim Laden. In 1 Minute neu laden.",
-                errorProximos: "Fehler beim Laden der kommenden Spiele.",
-                errorTabla: "Fehler beim Laden der Tabelle.",
-                pos: "Pos",
-                equipo: "Team",
-                pj: "Sp",
-                g: "S",
-                e: "U",
-                p: "N",
-                gf: "T+",
-                gc: "T-",
-                dg: "TD",
-                pts: "Pkt",
-                footer: "Live-Daten | Mit Liebe aus Venezuela gemacht"
-            },
-            pt: {
-                titulo: "Copa 2026 - Resultados e Classificação ao Vivo",
-                mensajeVenezuela: " Olá, prazer em conhecê-lo, sou da Venezuela, criei este site sem saber programar, mas tentei com muito carinho para mostrar resultados da Copa. Se quiser colaborar, ficarei grato de coração, saudações.",
-                partidosHoy: "Jogos de Hoje",
-                proximos: "Próximos Jogos",
-                tabla: "Tabela de Classificação",
-                colabora: "Colabore com o projeto",
-                donarPaypal: "Doar pelo PayPal",
-                donarBinance: "Doar pela Binance",
-                cargando: "Carregando resultados...",
-                cargandoProximos: "Carregando próximos jogos...",
-                cargandoGrupos: "Carregando grupos...",
-                noPartidos: "Sem jogos hoje. Veja próximos jogos abaixo.",
-                noProximos: "Sem próximos jogos esta semana.",
-                finalizado: "Finalizado",
-                enVivo: "AO VIVO",
-                enJuego: "Em jogo",
-                programado: "Hoje às",
-                goles: "Gols:",
-                grupo: "Fase:",
-                faseGrupos: "Fase de Grupos",
-                octavos: "Oitavas de Final",
-                cuartos: "Quartas de Final",
-                semis: "Semifinais",
-                final: "Final",
-                tercerPuesto: "Disputa de 3º Lugar",
-                clasificados: "Classificados",
-                eliminados: "Eliminados",
-                jugador: "Jogador",
-                equipo: "Time",
-                estadio: "Estádio a confirmar",
-                fecha: "Data:",
-                estado: "Status:",
-                error: "Erro ao carregar dados. Tente recarregar em 1 minuto.",
-                errorProximos: "Erro ao carregar próximos jogos.",
-                errorTabla: "Erro ao carregar tabela.",
-                pos: "Pos",
-                equipo: "Time",
-                pj: "J",
-                g: "V",
-                e: "E",
-                p: "D",
-                gf: "GP",
-                gc: "GC",
-                dg: "SG",
-                pts: "Pts",
-                footer: "Dados ao vivo | Feito com carinho da Venezuela"
+                subtitle: 'Data automatically updated from ESPN',
+                todayMatches: "Today's Matches",
+                nextMatches: 'Upcoming Matches',
+                groupStandings: 'Group Standings',
+                loading: 'Loading...',
+                noMatches: 'No matches today. Check upcoming matches below.',
+                error: 'Error loading data. Try reloading the page.',
+                live: 'LIVE',
+                finished: 'Finished',
+                scheduled: 'Scheduled',
+                donationTitle: 'Support the project',
+                donationText: 'If you like this website, you can support with a donation',
+                welcomeMsg: 'Hello, nice to meet you. I am from Venezuela. I designed this website without knowing programming, but I have tried with a lot of love to show World Cup results. If you wish to collaborate, I will be grateful from the heart. Greetings.',
+                group: 'Group',
+                team: 'Team',
+                pj: 'MP',
+                g: 'W',
+                e: 'D',
+                p: 'L',
+                gf: 'GF',
+                gc: 'GA',
+                dg: 'GD',
+                pts: 'PTS'
             }
         };
 
-        let idiomaActual = navigator.language.split('-')[0];
-        if (!traducciones[idiomaActual]) idiomaActual = 'es';
-
-        function t(clave) {
-            return traducciones[idiomaActual][clave] || traducciones['es'][clave];
-        }
-
         function cambiarIdioma() {
-            idiomaActual = document.getElementById('idioma').value;
-            document.querySelectorAll('[data-i18n]').forEach(el => {
-                const clave = el.getAttribute('data-i18n');
-                el.textContent = t(clave);
-            });
-            document.title = t('titulo');
-            mostrarResultados();
-            mostrarProximosPartidos();
-            mostrarTablaPosiciones();
+            idiomaActual = document.getElementById('languageSelect').value;
+            const t = textos[idiomaActual];
+            document.getElementById('subtitle').textContent = t.subtitle;
+            document.getElementById('todayMatches').textContent = t.todayMatches;
+            document.getElementById('nextMatches').textContent = t.nextMatches;
+            document.getElementById('groupStandings').textContent = t.groupStandings;
+            document.getElementById('donationTitle').textContent = t.donationTitle;
+            document.getElementById('donationText').textContent = t.donationText;
+            document.getElementById('welcomeMsg').textContent = t.welcomeMsg;
+            if (datosCache) mostrarDatos(datosCache);
         }
 
-        const resultsDiv = document.getElementById('results');
-        const upcomingDiv = document.getElementById('upcoming');
-        const groupsDiv = document.getElementById('groups');
-
-        const ESPN_URL = 'https://corsproxy.io/?https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard';
-        const ESPN_GROUPS_URL = 'https://corsproxy.io/?https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/standings';
-
-        async function mostrarResultados() {
+        async function cargarDatos() {
             try {
-                resultsDiv.innerHTML = t('cargando');
-                const res = await fetch(ESPN_URL);
-                const data = await res.json();
+                const response = await fetch(ESPN_URL);
+                const data = await response.json();
+                datosCache = data;
+                mostrarDatos(data);
+                cargarPosiciones();
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('partidos-hoy').innerHTML = `<div class="error">${textos[idiomaActual].error}</div>`;
+                document.getElementById('proximos-partidos').innerHTML = `<div class="error">${textos[idiomaActual].error}</div>`;
+            }
+        }
 
-                if (!data.events || data.events.length === 0) {
-                    resultsDiv.innerHTML = `<p>${t('noPartidos')}</p>`;
-                    return;
+        function mostrarDatos(data) {
+            const t = textos[idiomaActual];
+            const hoy = new Date().toISOString().split('T')[0];
+
+            const partidosHoy = data.events? data.events.filter(e => e.date.startsWith(hoy)) : [];
+            const proximosPartidos = data.events? data.events.filter(e =>!e.date.startsWith(hoy) && new Date(e.date) > new Date()) : [];
+
+            mostrarPartidos(partidosHoy, 'partidos-hoy', t.noMatches);
+            mostrarProximosPartidos(proximosPartidos.slice(0, 10), 'proximos-partidos');
+        }
+
+        function mostrarPartidos(partidos, elementId, mensajeVacio) {
+            const t = textos[idiomaActual];
+            const contenedor = document.getElementById(elementId);
+
+            if (!partidos || partidos.length === 0) {
+                contenedor.innerHTML = `<p>${mensajeVacio}</p>`;
+                return;
+            }
+
+            contenedor.innerHTML = partidos.map(partido => {
+                const comp = partido.competitions[0];
+                const home = comp.competitors.find(c => c.homeAway === 'home');
+                const away = comp.competitors.find(c => c.homeAway === 'away');
+                const status = comp.status.type.name;
+
+                let statusClass = 'status-scheduled';
+                let statusText = t.scheduled;
+                if (status === 'STATUS_IN_PROGRESS') {
+                    statusClass = 'status-live';
+                    statusText = t.live;
+                } else if (status === 'STATUS_FINAL') {
+                    statusClass = 'status-finished';
+                    statusText = t.finished;
                 }
 
-                resultsDiv.innerHTML = data.events.map(match => {
-                    try {
-                        const comp = match.competitions[0];
-                        const home = comp.competitors.find(t => t.homeAway === 'home');
-                        const away = comp.competitors.find(t => t.homeAway === 'away');
-                        const status = match.status.type;
-
-                        const horaPartido = new Date(match.date).toLocaleTimeString(idiomaActual === 'en'? 'en-US' : idiomaActual === 'de'? 'de-DE' : idiomaActual === 'pt'? 'pt-BR' : 'es-VE', {
-                            hour: '2-digit',
-                            minute: '2-digit'
-                        });
-
-                        let estadoClase = '';
-                        let estadoTexto = status.description || t('programado');
-
-                        if (status.state === 'in') {
-                            estadoClase = 'estado-vivo';
-                            const reloj = status.displayClock || t('enJuego');
-                            estadoTexto = `${t('enVivo')} ${reloj}`;
-                        } else if (status.state === 'post') {
-                            estadoClase = 'estado-final';
-                            estadoTexto = t('finalizado');
-                        } else if (status.state === 'pre') {
-                            estadoTexto = `${t('programado')} ${horaPartido}`;
-                        }
-
-                        let golesHTML = '';
-                        if (comp.details && Array.isArray(comp.details)) {
-                            const goles = comp.details.filter(d => d && d.scoringPlay === true && d.clock && d.clock.displayValue);
-
-                            if (goles.length > 0) {
-                                golesHTML = `
-                                    <div class="goles">
-                                        <strong>${t('goles')}</strong>
-                                        ${goles.map(gol => {
-                                            let jugador = t('jugador');
-                                            if (gol.athletesInvolved && gol.athletesInvolved[0] && gol.athletesInvolved[0].displayName) {
-                                                jugador = gol.athletesInvolved[0].displayName;
-                                            }
-
-                                            let equipoGol = t('equipo');
-                                            if (gol.team && gol.team.id) {
-                                                if (gol.team.id === home.team.id) {
-                                                    equipoGol = home.team.displayName;
-                                                } else if (gol.team.id === away.team.id) {
-                                                    equipoGol = away.team.displayName;
-                                                } else if (gol.team.displayName) {
-                                                    equipoGol = gol.team.displayName;
-                                                }
-                                            }
-
-                                            return `<p>⚽ ${gol.clock.displayValue}' - ${equipoGol}: ${jugador}</p>`;
-                                        }).join('')}
-                                    </div>
-                                `;
-                            }
-                        }
-
-                        let faseTexto = t('faseGrupos');
-                        const fechaPartido = new Date(match.date);
-                        const inicio16avos = new Date('2026-06-28');
-                        const inicioCuartos = new Date('2026-07-04');
-                        const inicioSemis = new Date('2026-07-08');
-                        const inicioFinal = new Date('2026-07-12');
-
-                        if (comp.notes && comp.notes[0] && comp.notes[0].headline) {
-                            faseTexto = comp.notes[0].headline;
-                        }
-                        else if (comp.type && comp.type.text) {
-                            faseTexto = comp.type.text;
-                        }
-                        else if (fechaPartido >= inicioFinal) {
-                            faseTexto = t('final');
-                        }
-                        else if (fechaPartido >= inicioSemis) {
-                            faseTexto = t('semis');
-                        }
-                        else if (fechaPartido >= inicioCuartos) {
-                            faseTexto = t('cuartos');
-                        }
-                        else if (fechaPartido >= inicio16avos) {
-                            faseTexto = t('octavos');
-                        }
-                        else if (comp.groups && comp.groups.name) {
-                            faseTexto = `${t('grupo')} ${comp.groups.name}`;
-                        }
-
-                        return `
-                            <div class="partido">
-                                <p><strong>${home.team.displayName}</strong> ${home.score || 0} - ${away.score || 0} <strong>${away.team.displayName}</strong></p>
-                                <p class="${estadoClase}">${t('estado')} ${estadoTexto}</p>
-                                <p>${t('grupo')} ${faseTexto}</p>
-                                ${golesHTML}
+                return `
+                    <div class="match-card">
+                        <div class="match-teams">
+                            <div class="team">
+                                <span class="team-name">${home.team.displayName}</span>
                             </div>
-                        `;
-                    } catch (err) {
-                        console.error('Error en un partido:', err);
-                        return `<div class="partido"><p>Error cargando este partido</p></div>`;
-                    }
-                }).join('');
-
-            } catch (error) {
-                console.error('Error general:', error);
-                resultsDiv.innerHTML = `<p style="color:red">${t('error')}</p>`;
-            }
-        }
-
-        async function mostrarProximosPartidos() {
-            try {
-                upcomingDiv.innerHTML = t('cargandoProximos');
-                const res = await fetch(ESPN_URL + '?dates=20260629-20260705');
-                const data = await res.json();
-
-                const proximos = data.events.filter(e => e.status.type.state === 'pre').slice(0, 10);
-
-                if (proximos.length === 0) {
-                    upcomingDiv.innerHTML = `<p>${t('noProximos')}</p>`;
-                    return;
-                }
-
-                upcomingDiv.innerHTML = proximos.map(match => {
-                    const home = match.competitions[0].competitors.find(t => t.homeAway === 'home');
-                    const away = match.competitions[0].competitors.find(t => t.homeAway === 'away');
-                    const fecha = new Date(match.date).toLocaleString(idiomaActual === 'en'? 'en-US' : idiomaActual === 'de'? 'de-DE' : idiomaActual === 'pt'? 'pt-BR' : 'es-VE', {
-                        weekday: 'short',
-                        day: 'numeric',
-                        month: 'short',
-                        hour: '2-digit',
-                        minute: '2-digit'
-                    });
-
-                    return `
-                        <div class="partido">
-                            <p><strong>${home.team.displayName} vs ${away.team.displayName}</strong></p>
-                            <p>${t('fecha')} ${fecha}</p>
-                            <p>${match.competitions[0].venue?.fullName || t('estadio')}</p>
-                        </div>
-                    `;
-                }).join('');
-
-            } catch (error) {
-                console.error('Error próximos:', error);
-                upcomingDiv.innerHTML = `<p style="color:red">${t('errorProximos')}</p>`;
-            }
-        }
-
-        async function mostrarTablaPosiciones() {
-            try {
-                groupsDiv.innerHTML = t('cargandoGrupos');
-                const res = await fetch(ESPN_GROUPS_URL);
-                const data = await res.json();
-
-                if (!data.children) {
-                    groupsDiv.innerHTML = `<p>${t('errorTabla')}</p>`;
-                    return;
-                }
-
-                let clasificados = [];
-                let eliminados = [];
-
-                data.children.forEach(grupo => {
-                    const equipos = grupo.standings.entries;
-
-                    equipos.forEach((equipo, idx) => {
-                        const stats = equipo.stats;
-                        const pj = stats.find(s => s.name === 'gamesPlayed')?.value || 0;
-                        const pts = stats.find(s => s.name === 'points')?.value || 0;
-                        const dg = stats.find(s => s.name === 'pointDifferential')?.value || 0;
-
-                        const equipoData = {
-                            nombre: equipo.team.displayName,
-                            grupo: grupo.name,
-                            pj: pj,
-                            pts: pts,
-                            dg: dg,
-                            pos: idx + 1
-                        };
-
-                        if (pj >= 3) {
-                            if (idx < 2) {
-                                clasificados.push(equipoData);
-                            } else {
-                                eliminados.push(equipoData);
-                            }
-                        }
-                        else if (pj === 2 && pts >= 6) {
-                            clasificados.push(equipoData);
-                        }
-                        else if (pj === 2 && pts === 0) {
-                            eliminados.push(equipoData);
-                        }
-                    });
-                });
-
-                clasificados.sort((a, b) => b.pts - a.pts || b.dg - a.dg);
-                eliminados.sort((a, b) => b.pts - a.pts || b.dg - a.dg);
-
-                let listasHTML = `
-                    <div class="listas-clasificacion">
-                        <div class="lista-clasificados">
-                            <h3>✅ ${t('clasificados')} a Octavos (${clasificados.length})</h3>
-                            ${clasificados.length > 0? `
-                                <div class="equipos-grid">
-                                    ${clasificados.map(e => `
-                                        <div class="equipo-clasificado">
-                                            <strong>${e.nombre}</strong>
-                                            <span>${e.grupo} - ${e.pts} pts (${e.dg > 0? '+' : ''}${e.dg})</span>
-                                        </div>
-                                    `).join('')}
-                                </div>
-                            ` : `<p>Todavía no hay clasificados</p>`}
-                        </div>
-
-                        <div class="lista-eliminados">
-                            <h3>❌ ${t('eliminados')} (${eliminados.length})</h3>
-                            ${eliminados.length > 0? `
-                                <div class="equipos-grid">
-                                    ${eliminados.map(e => `
-                                        <div class="equipo-eliminado">
-                                            <strong>${e.nombre}</strong>
-                                            <span>${e.grupo} - ${e.pts} pts (${e.dg > 0? '+' : ''}${e.dg})</span>
-                                        </div>
-                                    `).join('')}
-                                </div>
-                            ` : `<p>Todavía no hay eliminados</p>`}
+                            <div class="score">${home.score || '0'} - ${away.score || '0'}</div>
+                            <div class="team" style="justify-content: flex-end;">
+                                <span class="team-name">${away.team.displayName}</span>
+                            </div>
+                        <div class="match-info">
+                            <span class="${statusClass}">${statusText}</span>
+                            <span style="margin-left: 10px;">${new Date(partido.date).toLocaleString(idiomaActual === 'es'? 'es-ES' : 'en-US')}</span>
                         </div>
                     </div>
                 `;
+            }).join('');
+        }
 
-                let tablasHTML = data.children.map(grupo => {
-                    const equipos = grupo.standings.entries;
+        function mostrarProximosPartidos(partidos, elementId) {
+            const t = textos[idiomaActual];
+            const contenedor = document.getElementById(elementId);
 
-                    return `
-                        <div class="grupo-tabla">
-                            <h3>${grupo.name}</h3>
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>${t('pos')}</th>
-                                        <th>${t('equipo')}</th>
-                                        <th>${t('pj')}</th>
-                                        <th>${t('g')}</th>
-                                        <th>${t('e')}</th>
-                                        <th>${t('p')}</th>
-                                        <th>${t('gf')}</th>
-                                        <th>${t('gc')}</th>
-                                        <th>${t('dg')}</th>
-                                        <th>${t('pts')}</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    ${equipos.map((equipo, idx) => {
-                                        const stats = equipo.stats;
-                                        const pj = stats.find(s => s.name === 'gamesPlayed')?.value || 0;
-                                        const g = stats.find(s => s.name === 'wins')?.value || 0;
-                                        const e = stats.find(s => s.name === 'ties')?.value || 0;
-                                        const p = stats.find(s => s.name === 'losses')?.value || 0;
-                                        const gf = stats.find(s => s.name === 'pointsFor')?.value || 0;
-                                        const gc = stats.find(s => s.name === 'pointsAgainst')?.value || 0;
-                                        const dg = stats.find(s => s.name === 'pointDifferential')?.value || 0;
-                                        const pts = stats.find(s => s.name === 'points')?.value || 0;
+            if (!partidos || partidos.length === 0) {
+                contenedor.innerHTML = `<div class="error">${t.error}</div>`;
+                return;
+            }
 
-                                        let clase = '';
-                                        if (pj >= 2 && idx < 2) clase = 'clasificado';
-                                        if (pj >= 2 && idx > 1 && pts < 3) clase = 'eliminado';
+            contenedor.innerHTML = partidos.map(partido => {
+                const comp = partido.competitions[0];
+                const home = comp.competitors.find(c => c.homeAway === 'home');
+                const away = comp.competitors.find(c => c.homeAway === 'away');
 
-                                        return `
-                                            <tr class="${clase}">
-                                                <td>${idx + 1}</td>
-                                                <td style="text-align:left">${equipo.team.displayName}</td>
-                                                <td>${pj}</td>
-                                                <td>${g}</td>
-                                                <td>${e}</td>
-                                                <td>${p}</td>
-                                                <td>${gf}</td>
-                                                <td>${gc}</td>
-                                                <td>${dg}</td>
-                                                <td><strong>${pts}</strong></td>
-                                            </tr>
-                                        `;
-                                    }).join('')}
-                                </tbody>
-                            </table>
+                return `
+                    <div class="match-card">
+                        <div class="match-teams">
+                            <div class="team">
+                                <span class="team-name">${home.team.displayName}</span>
+                            </div>
+                            <div class="score">vs</div>
+                            <div class="team" style="justify-content: flex-end;">
+                                <span class="team-name">${away.team.displayName}</span>
+                            </div>
                         </div>
-                    `;
-                }).join('');
+                        <div class="match-info">
+                            <span class="status-scheduled">${t.scheduled}</span>
+                            <span style="margin-left: 10px;">${new Date(partido.date).toLocaleString(idiomaActual === 'es'? 'es-ES' : 'en-US')}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
 
-                groupsDiv.innerHTML = listasHTML + tablasHTML;
-
+        async function cargarPosiciones() {
+            try {
+                const response = await fetch(ESPN_GROUPS_URL);
+                const data = await response.json();
+                mostrarPosiciones(data);
             } catch (error) {
-                console.error('Error tabla:', error);
-                groupsDiv.innerHTML = `<p style="color:red">${t('errorTabla')}</p>`;
+                console.error('Error:', error);
+                document.getElementById('tabla-posiciones').innerHTML = `<div class="error">${textos[idiomaActual].error}</div>`;
             }
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('idioma').value = idiomaActual;
-            document.getElementById('idioma').addEventListener('change', cambiarIdioma);
-            cambiarIdioma();
-        });
+        function mostrarPosiciones(data) {
+            const t = textos[idiomaActual];
+            const contenedor = document.getElementById('tabla-posiciones');
 
-        mostrarResultados();
-        mostrarProximosPartidos();
-        mostrarTablaPosiciones();
+            if (!data.children || data.children.length === 0) {
+                contenedor.innerHTML = `<div class="error">${t.error}</div>`;
+                return;
+            }
 
-        setInterval(mostrarResultados, 45000);
+            let html = '';
+            data.children.forEach(grupo => {
+                html += `<h3 style="margin-top: 20px; color: #1e3c72;">${t.group} ${grupo.name}</h3>`;
+                html += `
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>${t.team}</th>
+                                <th>${t.pj}</th>
+                                <th>${t.g}</th>
+                                <th>${t.e}</th>
+                                <th>${t.p}</th>
+                                <th>${t.gf}</th>
+                                <th>${t.gc}</th>
+                                <th>${t.dg}</th>
+                                <th>${t.pts}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+
+                grupo.standings.entries.slice(0, 4).forEach((entry, index) => {
+                    const stats = entry.stats;
+                    const className = index < 2? 'qualified' : '';
+                    html += `
+                        <tr class="${className}">
+                            <td>${entry.team.displayName}</td>
+                            <td>${stats.find(s => s.name === 'gamesPlayed')?.value || 0}</td>
+                            <td>${stats.find(s => s.name === 'wins')?.value || 0}</td>
+                            <td>${stats.find(s => s.name === 'ties')?.value || 0}</td>
+                            <td>${stats.find(s => s.name === 'losses')?.value || 0}</td>
+                            <td>${stats.find(s => s.name === 'pointsFor')?.value || 0}</td>
+                            <td>${stats.find(s => s.name === 'pointsAgainst')?.value || 0}</td>
+                            <td>${stats.find(s => s.name === 'pointDifferential')?.value || 0}</td>
+                            <td><strong>${stats.find(s => s.name === 'points')?.value || 0}</strong></td>
+                        </tr>
+                    `;
+                });
+
+                html += '</tbody></table>';
+            });
+
+            contenedor.innerHTML = html;
+        }
+
+        // Cargar datos al iniciar
+        cargarDatos();
+
+        // Actualizar cada 5 minutos
+        setInterval(cargarDatos, 300000);
     </script>
 </body>
 </html>
